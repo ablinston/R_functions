@@ -90,3 +90,49 @@ compare_data <- function(data_1, data_2, sort, precision = 1000) {
   print("Check complete")
 }
 
+
+
+
+size_of_list <- function(list_object) {
+  
+  items <- data.frame(name = names(list_object),
+                      size = NA)
+  
+  for (i in c(1:length(list_object))) {
+    
+    items[i, "size"] <- object.size(list_object[[i]])
+    
+  }
+  
+  print(items %>% arrange(size))
+  
+}
+
+compare_dataset_list = function(list1, list2, sort = FALSE, precision = 10) {
+  
+  if (length(list1) != length(list2)) {
+    stop("List lengths don't match")
+  }
+  
+
+  
+  for (i in c(1:length(list1))) {
+    
+    setnames(list1[[i]],
+             names(list1[[i]])[grepl("ADJUSTED_EC", names(list1[[i]]))],
+             gsub("_ADJUSTED_EC",
+                  "_1415",
+                  names(list1[[i]])[grepl("ADJUSTED_EC", names(list1[[i]]))]))
+    
+    setnames(list2[[i]],
+             names(list2[[i]])[grepl("ADJUSTED_EC", names(list2[[i]]))],
+             gsub("_ADJUSTED_EC",
+                  "_1415",
+                  names(list2[[i]])[grepl("ADJUSTED_EC", names(list2[[i]]))]))
+    compare_data(list1[[i]], list2[[i]], sort = sort, precision = precision)
+  }
+  
+}
+
+
+
