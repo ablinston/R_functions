@@ -1,6 +1,7 @@
 library(data.table)
 library(dplyr)
 library(knitr)
+library(car)
 
 compare_data <- function(data_1, data_2, sort, precision = 1000) {
   
@@ -134,5 +135,30 @@ compare_dataset_list = function(list1, list2, sort = FALSE, precision = 10) {
   
 }
 
+# This function takes a fitted linear regression model and tests the underlying assumptions
+test_lm_assumptions <- function(model) {
+  
+  # Linearity - that the trend is flat across the fitted values
+  plot(model, 1)
+  
+  # Homoscedasticity - that the variance of the errors is constant
+  plot(model, 3)
+  
+  # Perfect collinearity between predictors
+  
+  # Normal errors
+  qqPlot(model$residuals)
+  
+}
 
-
+# This function returns a vector of the standard deviation of predictions
+# from a linear regression model. By definition, the variance of predictions
+# is the variance of the model parameters plus the variance of the residuals (i.e. noise)
+prediction_std_error <- function(model, newdata) {
+  
+  # Get the predictions with associated standard errors
+  predictions <- predict(model, newdata, se.fit = TRUE)
+  
+  return(sqrt(predictions$se.fit ^ 2 + predictions$residual.scale ^ 2))
+  
+}
